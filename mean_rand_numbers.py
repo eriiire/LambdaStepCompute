@@ -1,0 +1,39 @@
+#import necessary libraries
+
+import json
+import random
+import csv
+import boto3
+import tempfile
+import time
+
+def lambda_handler(event, context):
+    try:
+        # Extract file name from JSON by retrieving the first key
+        name = event[next(iter(event))]
+        
+        # Generate a random number
+        result = random.randint(0, 1000)
+        
+        # Time delay to simulate computation time
+        time.sleep(600)
+    
+        # Create a CSV file with the random number as content
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+            file_name = temp_file.name
+            writer = csv.writer(temp_file)
+            writer.writerow([result])
+    
+        # Save the CSV file to S3
+        s3_client = boto3.client('s3')
+        bucket_name = 'store-random-number'
+        folder_route = 'generated_numbers/'
+        s3_key = folder_route + name + '.csv'
+    
+        with open(file_name, 'rb') as f:
+            s3_client.upload_fileobj(f, bucket_name, s3_key)
+    
+        return {'message': f"{s3_key} has been saved in the S3 bucket."}
+
+    except Exception as e:
+        return {'message': f"An error occurred: {e}, {file_name}"}
