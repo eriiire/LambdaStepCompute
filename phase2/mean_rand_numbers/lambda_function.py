@@ -33,5 +33,16 @@ def handler(event, context):
     
         return {'message': f"{s3_key} has been saved in the S3 bucket."}
 
+    except KeyError as ke:
+        return {'message': f"KeyError: {ke}"}
+
+    except ValueError as ve:
+        return {'message': f"ValueError: {ve}"}
+
+    except FileNotFoundError as fnfe:
+        return {'message': f"FileNotFoundError: {fnfe}"}
+
     except Exception as e:
+        # Handle any other unexpected exceptions
         return {'message': f"An error occurred: {e}, {file_name}"}
+
