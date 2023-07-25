@@ -12,6 +12,10 @@ Since the WSM code contains R code which is not a language supported by lambda f
 
 3. **Python Script 3 (collect_file_from_s3_bucket.py):** This script collects the generated CSV files from the S3 bucket, extracts the numbers, and calculates their average. It is also packed within a Docker container for seamless integration.
 
+This phase mimics the individual runs and runtime of the WSM code.
+
+These Python scripts are executed using workflows orchestrated by AWS Step Functions. Each iteration of Python Script 2 is run in parallel.
+
 ## Docker Containers for Lambda Functions
 
 To create Lambda functions from these Docker containers, please follow the instructions outlined in the file titled 'create-and-deploy-dockerfile.md'. This document provides step-by-step guidance on building Docker images and deploying them as Lambda functions in AWS.
