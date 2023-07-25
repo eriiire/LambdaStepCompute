@@ -10,6 +10,8 @@ This documentation outlines the overall process of the AWS Step Function workflo
 
 ## Architecture Overview 
 
+![Step Function Workflow Diagram](https://github.com/eriiire/LambdaStepCompute/raw/b1a2c424f10074c581f7baeff8b9b9db553b70fe/phase2/stepfunction-workflow.png)
+
 The process involves the following components: 
 
   
@@ -38,9 +40,9 @@ The Step Function workflow comprises the following states:
 
   
 
-### State 1: Lambda Invoke – generate_batch_number.py) 
+### State 1: Lambda Invoke – generate_batch_number.py
 
-- Purpose: Invokes the first Lambda function to create batch numbers for individual CSV files and generate name-value pairs for parallel processing. 
+- Purpose: Invokes Lambda Function 1 to create batch numbers for individual CSV files and generate name-value pairs for parallel processing. 
 
 - Input: Requires input in the format `{'repetitions': int}`, where `int` specifies the number of times the simulation is to be run. 
 
@@ -56,14 +58,14 @@ The Step Function workflow comprises the following states:
 
  
 
-- Purpose: Processes the list of name-value pairs in parallel by invoking the second Lambda function for each item (batch) in the list. 
+- Purpose: Processes the list of name-value pairs in parallel by invoking Lambda Function 2 for each item (batch) in the list.
 
 - Input: Receives the output from the previous state (list of name-value pairs). 
 
 - Output: None (Parallel processing). 
 
-- Lambda Function: The second Lambda function generates random numbers, creates CSV files, and uploads them to the S3 bucket. 
-
+- Lambda Function: Lambda Function 2 generates random numbers, creates CSV files, and uploads them to the S3 bucket. These are all done in parallel.
+  
 - End State: This state is the last state for parallel processing. 
 
   
@@ -72,7 +74,7 @@ The Step Function workflow comprises the following states:
 
  
 
-- Purpose: Collects CSV files from the S3 bucket based on the processed data and batch number generated in the 1st Lambda Function. Then, calculates the average of the numbers extracted from the CSV files. 
+- Purpose: Collects CSV files from the S3 bucket based on the processed data and batch number generated in Lambda Function 1. Then, calculates the average of the numbers extracted from the CSV files.
 
 - Input: Receives the filtered filenames from the parallel Map state and uses that to filter through the s3 bucket and select the appropriate files. 
 
@@ -86,7 +88,7 @@ The Step Function workflow comprises the following states:
 
 ### State 4: Success 
 
-- Purpose: Marks the successful completion of the Step Function workflow. 
+- Purpose: Marks the successful completion of the Step Function workflow. Provided all prior steps are succesfully completed, else failure.
 
 - Input: None. 
 
@@ -98,10 +100,10 @@ The Step Function workflow comprises the following states:
 
 1. The Step Function is triggered with input data specifying the number of repetitions for the simulation. This determines the number of parallel processes which will be triggered.  
 
-2. The "Lambda Invoke" state generates batch numbers and name-value pairs for the individual CSV files. 
+2. The "Lambda Invoke 1" state generates batch numbers and name-value pairs for the individual CSV files. 
 
-3. The generated name-value pairs are processed in parallel by the "Parallel Map" state, where the second Lambda function generates random numbers, creates CSV files, and uploads them to the S3 bucket. 
+3. The generated name-value pairs are processed in parallel by the "Parallel Map" state, where Lambda Function 2 generates random numbers, creates CSV files, and uploads them to the S3 bucket. 
 
-4. After parallel processing, the "Lambda Invoke (Collect Files from S3)" state collects the relevant CSV files from the S3 bucket based on the processed data and calculates the average of the extracted numbers. 
+4. After parallel processing, the "Lambda Invoke 3 (Collect Files from S3)" state collects the relevant CSV files from the S3 bucket based on the processed data and calculates the average of the extracted numbers. 
 
 5. The Step Function reaches the "Success" state, indicating the successful completion of the entire process. 
