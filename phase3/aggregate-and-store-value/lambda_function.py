@@ -72,7 +72,7 @@ def calculate_average(run_id):
 
 def write_to_database(run_id, average):
     #retrieve connection details
-    get_secret()
+    dict_secret = get_secret()
 
     # Connect to the database
     connection = pymysql.connect(
