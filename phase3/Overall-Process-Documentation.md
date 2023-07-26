@@ -18,7 +18,7 @@ The process involves the following components:
    - **Lambda Function 2 (write-to-db.py):** Generates random numbers, saves them to the database, and introduces a 10-minute sleep delay for each iteration.
    - **Lambda Function 3 (aggregate-and-store-value.py):** Collects the generated values from the database, calculates their average, and stores it in another database.
 
-3. Amazon RDS Database: Stores the generated values and their corresponding run IDs.
+3. Amazon RDS Database: Stores the generated values and their corresponding run and iteration IDs.
 
 ## Step Function Workflow
 
