@@ -12,7 +12,8 @@ def handler(event, context):
     repetitions = event['repetitions']
     
     # Generate a unique identifier for the batch with a timestamp
-    batch_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    length_of_list = 5
+    batch_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length_of_list))
     timestamp = str(int(time.time()))
     batch_number = f'{batch_id}_{timestamp}'
     

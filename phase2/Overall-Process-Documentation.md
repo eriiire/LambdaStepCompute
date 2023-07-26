@@ -1,72 +1,109 @@
-Overall Process Documentation - AWS Step Function Workflow
-Introduction
-This documentation outlines the overall process of the AWS Step Function workflow to orchestrate the execution of three AWS Lambda functions. The Step Function coordinates the creation of batch numbers, parallel processing of generating random numbers, creating CSV files to store the numbers, and saving the CSV files in S3 buckets, and collection of data from an S3 bucket. The primary purpose of this process is to generate and process random numbers, save them as CSV files, and calculate their average using parallelization.
+# Overall Process Documentation - AWS Step Function Workflow 
 
-Architecture Overview
-The process involves the following components:
+  
 
-AWS Step Function: The orchestrator that coordinates the execution of Lambda functions and manages the flow of data between them.
+## Introduction 
 
-AWS Lambda Functions:
+This documentation outlines the overall process of the AWS Step Function workflow to orchestrate the execution of three AWS Lambda functions. The Step Function coordinates the creation of batch numbers, parallel processing of generating random numbers, creating CSV files to store the numbers, and saving the CSV files in S3 buckets, and collection of data from an S3 bucket. The primary purpose of this process is to generate and process random numbers, save them as CSV files, and calculate their average using parallelization. 
 
-Lambda Function 1: Generates unique batch numbers and name-value pairs.
+  
 
-Lambda Function 2: Generates random numbers, saves them as CSV files, and uploads them to an S3 bucket.
+## Architecture Overview 
 
-Lambda Function 3: Collects the generated CSV files from the S3 bucket, extracts numbers, and calculates their average.
+![Step Function Workflow Diagram](https://github.com/eriiire/LambdaStepCompute/raw/b1a2c424f10074c581f7baeff8b9b9db553b70fe/phase2/stepfunction-workflow.png)
 
-Amazon S3 Bucket: Stores the generated CSV files containing random numbers.
+The process involves the following components: 
 
-Step Function Workflow
-The Step Function workflow comprises the following states:
+  
 
-State 1: Lambda Invoke – generate_batch_number.py)
-Purpose: Invokes the first Lambda function to create batch numbers for individual CSV files and generate name-value pairs for parallel processing.
+1. AWS Step Function: The orchestrator that coordinates the execution of Lambda functions and manages the flow of data between them. 
 
-Input: Requires input in the format {'repetitions': int}, where int specifies the number of times the simulation is to be run.
+  
 
-Output: Returns a list of name-value pairs, each representing a batch ID and a unique identifier for the CSV file.
+2. AWS Lambda Functions: 
 
-Retry: In case of specific Lambda errors (e.g., "Lambda.ServiceException," "Lambda.AWSLambdaException," "Lambda.SdkClientException," "Lambda.TooManyRequestsException"), the state will retry up to 6 times with an exponential backoff rate of 2 seconds between retries.
+   - **Lambda Function 1:** Generates unique batch numbers and name-value pairs. 
 
-Next State: Parallel Map State.
+   - **Lambda Function 2:** Generates random numbers, saves them as CSV files, and uploads them to an S3 bucket. 
 
-State 2: Parallel Map - mean_rand_numbers.py
-Purpose: Processes the list of name-value pairs in parallel by invoking the second Lambda function for each item (batch) in the list.
+   - **Lambda Function 3:** Collects the generated CSV files from the S3 bucket, extracts numbers, and calculates their average. 
 
-Input: Receives the output from the previous state (list of name-value pairs).
+  
 
-Output: None (Parallel processing).
+3. Amazon S3 Bucket: Stores the generated CSV files containing random numbers. 
 
-Lambda Function: The second Lambda function generates random numbers, creates CSV files, and uploads them to the S3 bucket.
+  
 
-End State: This state is the last state for parallel processing.
+## Step Function Workflow 
 
-State 3: Lambda Invoke - collect_file_from_s3_bucket.py
-Purpose: Collects CSV files from the S3 bucket based on the processed data and batch number generated in the 1st Lambda Function. Then, calculates the average of the numbers extracted from the CSV files.
+The Step Function workflow comprises the following states: 
 
-Input: Receives the filtered filenames from the parallel Map state and uses that to filter through the s3 bucket and select the appropriate files.
+  
 
-Output: Returns the average of the extracted numbers from the CSV files.
+### State 1: Lambda Invoke – generate_batch_number.py
 
-Retry: In case of specific Lambda errors (e.g., "Lambda.ServiceException," "Lambda.AWSLambdaException," "Lambda.SdkClientException," "Lambda.TooManyRequestsException"), the state will retry up to 6 times with an exponential backoff rate of 2 seconds between retries.
+- Purpose: Invokes Lambda Function 1 to create batch numbers for individual CSV files and generate name-value pairs for parallel processing. 
 
-Next State: Success State.
+- Input: Requires input in the format `{'repetitions': int}`, where `int` specifies the number of times the simulation is to be run. 
 
-State 4: Success
-Purpose: Marks the successful completion of the Step Function workflow.
+- Output: Returns a list of name-value pairs, each representing a batch ID and a unique identifier for the CSV file. 
 
-Input: None.
+- Retry: In case of specific Lambda errors (e.g., "Lambda.ServiceException," "Lambda.AWSLambdaException," "Lambda.SdkClientException," "Lambda.TooManyRequestsException"), the state will retry up to 6 times with an exponential backoff rate of 2 seconds between retries. 
 
-Output: None.
+- Next State: Parallel Map State. 
 
-Workflow Summary
-The Step Function is triggered with input data specifying the number of repetitions for the simulation. This determines the number of parallel processes which will be triggered.
+  
 
-The "Lambda Invoke" state generates batch numbers and name-value pairs for the individual CSV files.
+### State 2: Parallel Map - mean_rand_numbers.py 
 
-The generated name-value pairs are processed in parallel by the "Parallel Map" state, where the second Lambda function generates random numbers, creates CSV files, and uploads them to the S3 bucket.
+ 
 
-After parallel processing, the "Lambda Invoke (Collect Files from S3)" state collects the relevant CSV files from the S3 bucket based on the processed data and calculates the average of the extracted numbers.
+- Purpose: Processes the list of name-value pairs in parallel by invoking Lambda Function 2 for each item (batch) in the list.
 
-The Step Function reaches the "Success" state, indicating the successful completion of the entire process.
+- Input: Receives the output from the previous state (list of name-value pairs). 
+
+- Output: None (Parallel processing). 
+
+- Lambda Function: Lambda Function 2 generates random numbers, creates CSV files, and uploads them to the S3 bucket. These are all done in parallel.
+  
+- End State: This state is the last state for parallel processing. 
+
+  
+
+### State 3: Lambda Invoke - collect_file_from_s3_bucket.py 
+
+ 
+
+- Purpose: Collects CSV files from the S3 bucket based on the processed data and batch number generated in Lambda Function 1. Then, calculates the average of the numbers extracted from the CSV files.
+
+- Input: Receives the filtered filenames from the parallel Map state and uses that to filter through the s3 bucket and select the appropriate files. 
+
+- Output: Returns the average of the extracted numbers from the CSV files. 
+
+- Retry: In case of specific Lambda errors (e.g., "Lambda.ServiceException," "Lambda.AWSLambdaException," "Lambda.SdkClientException," "Lambda.TooManyRequestsException"), the state will retry up to 6 times with an exponential backoff rate of 2 seconds between retries. 
+
+- Next State: Success State. 
+
+  
+
+### State 4: Success 
+
+- Purpose: Marks the successful completion of the Step Function workflow. Provided all prior steps are succesfully completed, else failure.
+
+- Input: None. 
+
+- Output: None. 
+
+  
+
+## Workflow Summary 
+
+1. The Step Function is triggered with input data specifying the number of repetitions for the simulation. This determines the number of parallel processes which will be triggered.  
+
+2. The "Lambda Invoke 1" state generates batch numbers and name-value pairs for the individual CSV files. 
+
+3. The generated name-value pairs are processed in parallel by the "Parallel Map" state, where Lambda Function 2 generates random numbers, creates CSV files, and uploads them to the S3 bucket. 
+
+4. After parallel processing, the "Lambda Invoke 3 (Collect Files from S3)" state collects the relevant CSV files from the S3 bucket based on the processed data and calculates the average of the extracted numbers. 
+
+5. The Step Function reaches the "Success" state, indicating the successful completion of the entire process. 
