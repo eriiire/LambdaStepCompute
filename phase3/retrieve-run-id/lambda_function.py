@@ -1,23 +1,61 @@
 import boto3
+from botocore.exceptions import ClientError
+import ast
 import pymysql
 import json
 
-# Connection details for the database
-host = 'rds-db-1.cklt0stdp27j.us-east-1.rds.amazonaws.com'
-port = 3306
-username = 'admin'
-password = 'rds-db-1-password'
-database_name = 't_lambda_poc'
-table_name = 't_lambda_poc_stage'
+def get_secret():
+
+    secret_name = "prod/LambdaStepCompute/phase3"
+    region_name = "us-east-1"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        # For a list of exceptions thrown, see
+        # https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+        raise e
+
+    # Decrypts secret using the associated KMS key.
+    secret = get_secret_value_response['SecretString']
+
+    try:
+        # convert string type to dictionary
+        dict_secret = ast.literal_eval(secret)
+
+    except SyntaxError:
+        dict_secret = {}
+
+    return dict_secret
+
 
 def get_max_run_id():
+
+    #retrieve connection details
+    dict_secret = get_secret()
+
     # Connect to the database
-    connection = pymysql.connect(host=host, port=port, user=username, password=password, database=database_name)
+    connection = pymysql.connect(
+        host=dict_secret['host'],
+        port=3306,
+        user=dict_secret['username'],
+        password=dict_secret['password'],
+        database=dict_secret['database_1']
+        )
 
     try:
         # Get the max value from the RUN_ID column
         with connection.cursor() as cursor:
-            cursor.execute(f"SELECT MAX(RUN_ID) FROM {table_name}")
+            cursor.execute(f"SELECT MAX(RUN_ID) FROM {dict_secret['db1name']}")
             result = cursor.fetchone()[0]
         
         # Set the run_id variable based on the max value

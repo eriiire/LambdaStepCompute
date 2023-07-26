@@ -1,13 +1,13 @@
 {
   "Comment": "A description of my state machine",
-  "StartAt": "Lambda Invoke",
+  "StartAt": "Lambda Invoke 1",
   "States": {
-    "Lambda Invoke": {
+    "Lambda Invoke 1": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:retrieve-run-id-test-temp:$LATEST"
+        "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:retrieve-run-id-aws-secrets:$LATEST"
       },
       "Retry": [
         {
@@ -31,15 +31,15 @@
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "Lambda Invoke (1)",
+        "StartAt": "Lambda Invoke 2",
         "States": {
-          "Lambda Invoke (1)": {
+          "Lambda Invoke 2": {
             "Type": "Task",
             "Resource": "arn:aws:states:::lambda:invoke",
             "OutputPath": "$.Payload",
             "Parameters": {
               "Payload.$": "$",
-              "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:write-to-db:$LATEST"
+              "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:write-to-db-aws-secrets:$LATEST"
             },
             "Retry": [
               {
@@ -65,15 +65,15 @@
     "Pass": {
       "Type": "Pass",
       "InputPath": "$.body.output_body",
-      "Next": "Lambda Invoke (2)"
+      "Next": "Lambda Invoke 3"
     },
-    "Lambda Invoke (2)": {
+    "Lambda Invoke 3": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:agg-mean-from-db:$LATEST"
+        "FunctionName": "arn:aws:lambda:us-east-1:066035006373:function:agg-mean-from-db-aws-secret:$LATEST"
       },
       "Retry": [
         {
