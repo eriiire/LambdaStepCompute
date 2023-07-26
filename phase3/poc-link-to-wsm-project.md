@@ -17,3 +17,7 @@ These Python scripts are executed using workflows orchestrated by AWS Step Funct
 ## Docker Containers for Lambda Functions
 
 To create Lambda functions from these Docker containers, please follow the instructions outlined in the file titled 'create-and-deploy-dockerfile.md'. This document provides step-by-step guidance on building Docker images and deploying them as Lambda functions in AWS.
+
+## Relational Database
+
+The AWS RDS MySQL database (Community Version) is used to store any data generated during this process.
