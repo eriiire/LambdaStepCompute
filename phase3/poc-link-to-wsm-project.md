@@ -22,5 +22,5 @@ To create Lambda functions from these Docker containers, please follow the instr
 
 The AWS RDS MySQL database (Community Version) is used to store any data generated during this process.
 
-Information on how to connect to AWS RDS MySQL can be found here: [How to connect to DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToInstance.html)
+Information on how to connect to AWS RDS MySQL can be found here: [How to connect to DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ConnectToInstance.html)
 
