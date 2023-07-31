@@ -14,7 +14,7 @@ The process involves the following components:
 
 2. AWS Lambda Functions:
 
-   - **Lambda Function 1 (retrieve-run-id.py):** Generates unique run id's and iteration id's.
+   - **Lambda Function 1 (retrieve-run-id.py):** Generates unique run IDs and iteration IDs.
    - **Lambda Function 2 (write-to-db.py):** Generates random numbers, saves them to the database, and introduces a 10-minute sleep delay for each iteration.
    - **Lambda Function 3 (aggregate-and-store-value.py):** Collects the generated values from the database, calculates their average, and stores it in another database.
 
@@ -26,7 +26,7 @@ The Step Function workflow comprises the following states:
 
 ### State 1: Lambda Invoke 1 - retrieve-run-id.py
 
-- Purpose: Invokes Lambda Function 1 to create run and iteration id's which will be iterated over for parallel processing.
+- Purpose: Invokes Lambda Function 1 to create run and iteration IDs which will be iterated over for parallel processing.
 - Input: Requires input in the format `{'repetitions': int}`, where `int` specifies the number of times the simulation is to be run.
 - Output: Returns a json of run_id-iteration_id pairs, each representing a unique identifier for the random number generated.
 - Retry: In case of specific Lambda errors (e.g., "Lambda.ServiceException," "Lambda.AWSLambdaException," "Lambda.SdkClientException," "Lambda.TooManyRequestsException"), the state will retry up to 6 times with an exponential backoff rate of 2 seconds between retries.
