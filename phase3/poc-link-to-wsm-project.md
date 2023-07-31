@@ -4,7 +4,7 @@ In Phase 3 of this project, we build upon the work from Phase 1 and Phase 2. Doc
 
 ## Python Scripts and Docker Containers
 
-1. **Python Script 1 (retrieve-run-id.py):** This script generates generates unique run id's and iteration id's. It is placed inside a Docker container to ensure a consistent runtime environment.
+1. **Python Script 1 (retrieve-run-id.py):** This script generates generates unique run IDs and iteration IDs. It is placed inside a Docker container to ensure a consistent runtime environment.
 
 2. **Python Script 2 (write-to-db.py):** This script generates random numbers, saves them to the database, and introduces a 10-minute sleep delay for each iteration.
 
