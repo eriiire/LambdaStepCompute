@@ -4,7 +4,7 @@ FROM public.ecr.aws/lambda/python:3.10
 COPY requirements.txt ${LAMBDA_TASK_ROOT}
 
 # Copy function code
-COPY aasv_lambda_function.py ${LAMBDA_TASK_ROOT}
+COPY aasv_lambda_function.py utils.py ${LAMBDA_TASK_ROOT}
 
 # Install the specified packages
 RUN pip install -r requirements.txt
