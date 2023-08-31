@@ -1,10 +1,20 @@
-### Presentation on LambdaStepCompute Project and Its Proof of Concept
+### Presentation on a Proof of Concept for Parallelisation of the WSSR Project
 
 ---
 
 #### Introduction
 
-The LambdaStepCompute project aims to execute multiple simulation tasks in parallel using AWS Lambda Functions and Step Functions. The project is designed to run R code, which is part of the WSM (Water Surface Model), multiple times and aggregate the results.
+This project aims to execute provide a POC for the parallelisation of the WSSR Project, the project can be divided into two parts:
+
+- Using AWS Lambda Functions and Step Functions to explore the possibility of executing operations in parallel integrating a storage solution into the workflow process.
+  
+- Splitting the WSSR code, into two chunks:
+  - The Simulation Chunk: This segment focuses on the execution of the simmer simulation repeatedly. Each iteration's resultant data is preserved as rds files.
+  
+  - The Collation and Output Chunk: This segment is concerned with the merging of individual simulation outputs. It ends with the creation of a unified object. This then follows the previous flow and is undergoes output wrangling to produce a CSV file.
+
+
+multiple simulation tasks in parallel using AWS Lambda Functions and Step Functions. The project is designed to run R code, which is part of the WSM (Water Surface Model), multiple times and aggregate the results.
 
 ---
 
