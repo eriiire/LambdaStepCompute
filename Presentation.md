@@ -93,9 +93,9 @@ In summary, each phase and its corresponding steps have been executed successful
 
 - The essence of this plan is to divide the code into two primary chunks:
 
-      1. The Simulation Chunk: This segment focuses on the execution of the simmer simulation repeatedly. Each iteration's resultant data is preserved as rds files.
+1. The Simulation Chunk: This segment focuses on the execution of the simmer simulation repeatedly. Each iteration's resultant data is preserved as rds files.
 
-      2. The Collation and Output Chunk: This segment is concerned with the merging of individual simulation outputs. It ends with the creation of a unified object. This             then follows the previous flow and is undergoes output wrangling to produce a CSV file.
+2. The Collation and Output Chunk: This segment is concerned with the merging of individual simulation outputs. It ends with the creation of a unified object. This then follows the previous flow and is undergoes output wrangling to produce a CSV file.
 ---
 
 #### Code Snippets
