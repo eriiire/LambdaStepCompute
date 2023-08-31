@@ -28,6 +28,10 @@ This project aims to execute provide a POC for the parallelisation of the WSSR P
 
 ---
 
+![Step Function Workflow Diagram](https://github.com/eriiire/LambdaStepCompute/raw/b1a2c424f10074c581f7baeff8b9b9db553b70fe/phase2/stepfunction-workflow.png)
+
+---
+
 This is divided into 3 phases:
 
 #### Phase 1: Phase 1 involves executing 3 Lambda Functions. Random numbers are generated in parallel, stored in an S3 bucket, then extracted and aggregated.
@@ -44,7 +48,11 @@ This is divided into 3 phases:
 
 3. Amazon S3 Bucket: Stores the generated CSV files containing random numbers.
 
+---
+
 #### Phase 2: Phase 2 follows the exact workflow as Phase 1 but involves utilizing Docker containers to package the Lambda functions, which are then pushed to the Amazon Elastic Container Registry (ECR). These containers are used to create individual Lambda functions, which are then integrated into the Step Function workflow.
+
+---
 
 #### Phase 3: Phase 3 uses Docker containers built upon in Phase 2 but instead of storing generated random numbers in csv files and s3 buckets; random numbers are instead stored in a relational database. This will be utilized for smoother deployment and retrieval of data, and will closely mirror the deployment structure of the WSM project.
 
@@ -58,56 +66,22 @@ This is divided into 3 phases:
 
 3. Amazon RDS Database: Stores the generated values and their corresponding run and iteration IDs.
 
-
-#### Architecture Overview
-
-The architecture involves the following components:
-
-1. **AWS Step Function**: Orchestrates the execution of Lambda functions and manages the flow of data between them.
-2. **AWS Lambda Functions**: Perform specific tasks like generating batch numbers, creating CSV files, and calculating averages.
-3. **Amazon S3 Bucket**: Stores the generated CSV files containing random numbers.
-
-![Step Function Workflow Diagram](https://github.com/eriiire/LambdaStepCompute/raw/b1a2c424f10074c581f7baeff8b9b9db553b70fe/phase2/stepfunction-workflow.png)
-
 ---
 
-#### Workflow
+### Conclusion on LambdaStepCompute
 
-1. **State 1: Lambda Invoke – generate_batch_number.py**
-    - Generates unique batch numbers and name-value pairs.
-    - Input: `{'repetitions': int}`
-    - Output: List of name-value pairs.
-  
-2. **State 2: Parallel Map - mean_rand_numbers.py**
-    - Processes the list of name-value pairs in parallel.
-    - Input: Output from the previous state.
-    - Output: None (Parallel processing).
-  
-3. **State 3: Lambda Invoke - collect_file_from_s3_bucket.py**
-    - Collects CSV files from the S3 bucket and calculates their average.
-    - Input: Filtered filenames from the parallel Map state.
-    - Output: Average of the extracted numbers.
+The Proof of Concept (POC) for the parallelization of the WSSR Project, specifically focusing on the LambdaStepCompute component, has been successful. Each phase and the steps within those phases were executed successfully to completion.
 
-4. **State 4: Success**
-    - Marks the successful completion of the Step Function workflow.
+#### Phase 1: 
+The initial phase demonstrated the feasibility of executing Lambda Functions in parallel, orchestrated by AWS Step Functions. All objectives were met, including the generation of random numbers, their storage in an S3 bucket, and subsequent aggregation.
 
----
+#### Phase 2: 
+Building upon the success of Phase 1, this phase introduced Docker containers to package the Lambda functions. The containers were successfully pushed to Amazon ECR and integrated into the Step Function workflow. This added an extra layer of flexibility and scalability to the project, proving that the architecture can adapt to more tailored requirements.
 
-#### Proof of Concept (Phase 1)
+#### Phase 3: 
+The final phase took the project a step further by replacing the S3 storage solution with an Amazon RDS Database. This not only streamlined the data storage and retrieval process but also closely mirrored the deployment structure of the WSM project. The introduction of a relational database made the system more aligned with deployment-level needs.
 
-1. **Python Script 1 (generate_batch_number.py)**: Generates unique batch numbers and name-value pairs.
-2. **Python Script 2 (mean_rand_numbers.py)**: Generates random numbers, saves them as CSV files, and uploads them to an S3 bucket.
-3. **Python Script 3 (collect_file_from_s3_bucket.py)**: Collects the generated CSV files from the S3 bucket, extracts the numbers, and calculates their average.
-
-This phase mimics the individual runs and runtime of the WSM code. These Python scripts are executed using workflows orchestrated by AWS Step Functions. Each iteration of Python Script 2 is run in parallel.
-
----
-
-#### ARN References
-
-- `generate_batch_number`: `arn:aws:lambda:us-east-1:066035006373:function:generate_batch_number:$LATEST`
-- `mean_rand_numbers`: `arn:aws:lambda:us-east-1:066035006373:function:mean_rand_numbers:$LATEST`
-- `collect_file_from_s3_bucket`: `arn:aws:lambda:us-east-1:066035006373:function:collect_file_from_s3_bucket:$LATEST`
+In summary, each phase and its corresponding steps have been executed successfully, meeting all set objectives. The LambdaStepCompute component has proven that it can efficiently run R code in parallel, store and aggregate results, and do so in a scalable manner. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
 
 ---
 
