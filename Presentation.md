@@ -84,6 +84,8 @@ The final phase took the project a step further by replacing the S3 storage solu
 In summary, each phase and its corresponding steps have been executed successfully, meeting all set objectives. The LambdaStepCompute component has proven that it can efficiently run R code in parallel, store and aggregate results, and do so in a scalable manner. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
 
 ---
+### WSSR-MODEL-SPLIT
+---
 
 #### Code Snippets
 
