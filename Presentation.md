@@ -81,6 +81,8 @@ Building upon the success of Phase 1, this phase introduced Docker containers to
 #### Phase 3: 
 The final phase took the project a step further by replacing the S3 storage solution with an Amazon RDS Database. This not only streamlined the data storage and retrieval process but also closely mirrored the deployment structure of the WSM project. The introduction of a relational database made the system more aligned with deployment-level needs.
 
+---
+
 In summary, each phase and its corresponding steps have been executed successfully, meeting all set objectives. The LambdaStepCompute component has proven that it can efficiently run R code in parallel, store and aggregate results, and do so in a scalable manner. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
 
 ---
@@ -96,16 +98,16 @@ In summary, each phase and its corresponding steps have been executed successful
 1. The Simulation Chunk: This segment focuses on the execution of the simmer simulation repeatedly. Each iteration's resultant data is preserved as rds files.
 
 2. The Collation and Output Chunk: This segment is concerned with the merging of individual simulation outputs. It ends with the creation of a unified object. This then follows the previous flow and is undergoes output wrangling to produce a CSV file.
----
-
-#### Code Snippets
-
-- [generate_batch_number.py](https://github.com/eriiire/LambdaStepCompute/blob/main/phase1/generate_batch_number.py)
-- [mean_rand_numbers.py](https://github.com/eriiire/LambdaStepCompute/blob/main/phase1/mean_rand_numbers.py)
-- [collect_file_from_s3_bucket.py](https://github.com/eriiire/LambdaStepCompute/blob/main/phase1/collect_file_from_s3_bucket.py)
 
 ---
+- The R script `run-simmer.R` executes the simulation chunk of the the split and creates individual `env` objects.
+- After executing `run-simmer.R` for `n` number of times the next step is ready to be run.
+- After creating all individual `env` objects run `combine-and-process-output.R` to execute the 2nd chunk of the split.
+- The 2nd chunk combines individual `env` objects and passes the unified object to the output processing part of the process.
 
-You are currently on the free plan, which is significantly limited by the number of requests. To increase your quota, you can check available plans [here](https://c7d59216ee8ec59bda5e51ffc17a994d.auth.portal-pluginlab.ai/pricing).
+---
 
-Would you like to know more about any specific aspect of the project?
+In summary, each chunk of the split been executed successfully, meeting all set objectives. The `wssr-model-split` component has proven that it can efficiently run each cnhunk of the split, execute and create outputs. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
+
+---
+
