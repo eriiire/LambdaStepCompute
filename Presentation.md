@@ -24,7 +24,7 @@ This project aims to execute provide a POC for the parallelisation of the WSSR P
 - To run R code N times in parallel (currently 10, but scalable for the future).
 - To store the results
 - To aggregate the results of these runs.
-- To explore options for running R code in AWS Lambda functions.
+- To explore options for running R code in AWS Lambda functions using containers.
 
 ---
 
@@ -83,10 +83,23 @@ The final phase took the project a step further by replacing the S3 storage solu
 
 ---
 
-In summary, each phase and its corresponding steps have been executed successfully, meeting all set objectives. The LambdaStepCompute component has proven that it can efficiently run R code in parallel, store and aggregate results, and do so in a scalable manner. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
+In summary, each phase and its corresponding steps have been executed successfully, meeting all set objectives. The LambdaStepCompute component has proven that it can efficiently run code in parallel, store and aggregate results, and do so in a scalable manner. This POC serves as a foundation for the future development and deployment of the WSSR-Model Project.
 
 ---
 ### WSSR-MODEL-SPLIT
+---
+### Current Description of the Model
+
+- A json containing the number of simulation repetitions (default number is 10) is passed to wssr_model.R script. Simulation value might be used elsewhere in the program (something to look out for)
+
+- wssr_model.R sources 01_output.R 
+
+- 01_output.R then sources 06_patient-generators.R which in turn sources other R scripts (script details not important). 
+
+- 06_patient-generators.R creates `envs` and `out` objects which are of datatype `list` and `character`. `envs` is a list of environment data, while `out` is created with the line - `out <- capture.output(envs)`
+
+- This is used in the 01_output.R to create the csv output file template.
+
 ---
 #### Objectives
 
@@ -98,6 +111,10 @@ In summary, each phase and its corresponding steps have been executed successful
 1. The Simulation Chunk: This segment focuses on the execution of the simmer simulation repeatedly. Each iteration's resultant data is preserved as rds files.
 
 2. The Collation and Output Chunk: This segment is concerned with the merging of individual simulation outputs. It ends with the creation of a unified object. This then follows the previous flow and is undergoes output wrangling to produce a CSV file.
+---
+## Visual Representation
+
+![Visual Representation of Process](wssr_r_parallel_refactor.drawio.svg)
 
 ---
 - The R script `run-simmer.R` executes the simulation chunk of the the split and creates individual `env` objects.
